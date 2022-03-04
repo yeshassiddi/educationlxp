@@ -1,0 +1,194 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block title %}
+{% load str_function %}
+<title>Education | Stories</title>
+{% endblock %}
+{% block content %}
+<!-- Site wrapper -->
+<div class="wrapper">
+   <!-- Navbar -->
+   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+      <!-- Left navbar links -->
+   </nav>
+   <!-- /.navbar -->
+   <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <section class="content-header">
+         <div class="container-fluid">
+            <div class="row mb-2">
+               <div class="col-sm-6">
+                  <h1>Education</h1>
+               </div>
+               <div class="col-sm-6">
+                  <ol class="breadcrumb float-sm-right">
+                     <li class="breadcrumb-item"><a href="#">Education</a></li>
+                  </ol>
+               </div>
+            </div>
+         </div>
+         <!-- /.container-fluid -->
+         {% if msg %}
+         <div class="alert alert-danger">{{msg}}</div>
+         {% endif %}
+         {% if success_msg %}
+         <div class="alert alert-success">{{success_msg}}</div>
+         {% endif %}
+      </section>
+      <!-- Main content -->
+      <section class="content">
+         <div class="container-fluid">
+            <div class="row">
+               <!-- /.col -->
+               <div class="col-md-12">
+                  <div class="card">
+                     <div class="card-header p-2">
+                        <ul class="nav nav-pills">
+                           <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab" id="community_tab">Community</a></li>
+                           <li class="nav-item"><a class="nav-link" id="material_tab" href="#timeline" data-toggle="tab">Materials</a></li>
+                        </ul>
+                     </div>
+                     <!-- /.card-header -->
+                     <div class="card-body">
+                        <div class="tab-content">
+                           <div class="active tab-pane" id="activity">
+                              <!-- Post -->
+                              {% for one in study_discussion %}
+                              <div class="post">
+                                 <div class="user-block">
+                                    <img class="img-circle img-bordered-sm" src="{% static 'img/avatar.png' %}" alt="user image">
+                                    <span class="username">
+                                    <a href="/OtherUserProfilePage/?id={{one.user_instance.id}}&course_id={{one.id}}">{{one.user_instance.username|capfirst}}</a>
+                                    </span>
+                                    <span class="description">Shared publicly - {{one.created_on|MinuteHourAgo}}</span>
+                                 </div>
+                                 <!-- /.user-block -->
+                                 <p>
+                                    {{one.description}}.
+                                 </p>
+                              </div>
+                              {% endfor %}
+                              {% if course_id %}
+                              <form action="/discussion/" method="post">
+                                 {% csrf_token %}
+                                 <input type="hidden" name="course_id" value="{{course_id}}">
+                                 <input class="form-control form-control-sm" type="text" placeholder="Type Your Message ..." required="required" name="description"><br>
+                                 <div class="timeline-footer" style="margin-left: 45%">
+                                    <button type = "submit" class="btn btn-primary btn-sm">POST</button>
+                                 </div>
+                              </form>
+                              {% endif %}
+                              <!-- /.post -->
+                           </div>
+                           <!-- /.tab-pane -->
+                           <div class="tab-pane" id="timeline">
+                              <!-- The timeline -->
+                              <div class="timeline timeline-inverse">
+                                 <!-- timeline time label -->
+                                 <!-- /.timeline-label -->
+                                 <!-- timeline item -->
+                                 <div>
+                                    {% for one in study_material %}
+                                    <div class="timeline-item">
+                                       <span class="time"><i class="far fa-clock"></i> {{one.created_on|MinuteHourAgo}}</span>
+                                       <h3 class="timeline-header"><a href="/OtherUserProfilePage/?id={{one.user_instance.id}}&course_id={{one.id}}">{{one.user_instance.username}}</a> sent File.</h3>
+                                       <div class="timeline-body">
+                                          {{one.file.name}}
+                                       </div>
+                                       <div class="timeline-footer">
+                                          <a href="/download_file/?course_id={{one.id}}" class="btn btn-primary btn-sm">Download</a>
+                                          <a href="{{one.file.url}}" class="btn btn-danger btn-sm">View</a>
+                                       </div>
+                                    </div>
+                                    {% endfor %}
+                                    {% if request.user.role_instance.role_name == 'Professor' %}
+                                    <form action="/" method="post" enctype="multipart/form-data">
+                                       {% csrf_token %}
+                                       <input type="hidden" name="course_id" value="{{course_id}}">
+                                       <div class="btn-group w-20">
+                                          <span class="btn btn-success col fileinput-button dz-clickable" onclick="document.getElementById('getFile1_found').click()">
+                                          <i class="fas fa-plus"></i>
+                                          <span>Add files</span>
+                                          <input type='file' id="getFile1_found" class="images first_step_cls" accept="*" name="file" style="display:none;" onchange="readURLMySecond_Found(this)">
+                                          <span class="error-msg" id="images_sec_check_label_found" style="display: none"></span>
+                                          </span>
+                                       </div>
+                                       <div class="timeline-footer">
+                                          <br>
+                                          <button type = "submit" class="btn btn-primary btn-sm">Submit</button>
+                                       </div>
+                                     </form>
+                                     {% endif %}
+                              </div>
+                              <!-- END timeline item -->
+                              <!-- timeline item -->
+                              <div>
+                              </div>
+                           </div>
+                        </div>
+                        <!-- /.tab-pane -->
+                        <!-- /.tab-pane -->
+                     </div>
+                     <!-- /.tab-content -->
+                  </div>
+                  <!-- /.card-body -->
+               </div>
+               <!-- /.card -->
+            </div>
+            <!-- /.col -->
+         </div>
+         <!-- /.row -->
+   </div>
+   <!-- /.container-fluid -->
+   </section>
+   <!-- /.content -->
+</div>
+<footer class="main-footer">
+   <div class="float-right d-none d-sm-block">
+   </div>
+   <strong>Copyright &copy; 2022 <a href=".">Education.io</a>.</strong> All rights reserved.
+</footer>
+{% include 'base/sidewar.html' %}
+</div>
+<script type="text/javascript">
+   /// session storage
+   $(document).on('click', '#community_tab', function() {
+     var set_value = sessionStorage.setItem('value', "comm");
+   })
+   //
+   $(document).on('click', '#material_tab', function() {
+     var set_value = sessionStorage.setItem('value', "mat");
+   })
+   //
+   
+   
+   
+   
+   // end here for weight tab
+   
+   $(document).ready(function() {
+     var lastTab = sessionStorage.getItem('value');
+     if (lastTab == 'comm') {
+   
+         $('#material_tab').removeClass("active");
+         $('#community_tab').addClass("active");
+         $('#activity').addClass("show active");
+         $('#timeline').removeClass("show active");
+   
+   
+     }
+   
+     if (lastTab == 'mat') {
+         $('#community_tab').removeClass("active");
+         $('#material_tab').addClass("active");
+         $('#activity').removeClass("show active");
+         $('#timeline').addClass("show active");
+   
+     }
+   
+   
+   })
+   
+</script>
+<!-- ./wrapper -->
+{% endblock %}

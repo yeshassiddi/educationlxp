@@ -1,0 +1,263 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block title %}
+{% load str_function %}
+<title>Education | Profile</title>
+{% endblock %}
+{% block content %}
+<!-- Site wrapper -->
+<div class="wrapper">
+   <!-- Navbar -->
+   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+   </nav>
+   <!-- /.navbar -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+
+      <section class="content-header">
+         <div class="container-fluid">
+            <div class="row mb-2">
+               <div class="col-sm-6">
+                  <h1>Education</h1>
+               </div>
+               <div class="col-sm-6">
+                  <ol class="breadcrumb float-sm-right">
+                     <li class="breadcrumb-item"><a href="#">Education</a></li>
+                  </ol>
+               </div>
+            </div>
+         </div>
+         <!-- /.container-fluid -->
+         {% if msg %}
+         <div class="alert alert-danger">{{msg}}</div>
+         {% endif %}
+         {% if success_msg %}
+         <div class="alert alert-success">{{success_msg}}</div>
+         {% endif %}
+         <div class="alert alert-danger" style="display: none;" id="error_msg_1"></div>
+         <div class="alert alert-success" style="display: none;" id="success_msg_1"></div>
+
+      </section>
+
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-3">
+
+            <!-- Profile Image -->
+            <div class="card card-primary card-outline">
+              <div class="card-body box-profile">
+                <div class="text-center">
+                  <img class="profile-user-img img-fluid img-circle"
+                       {%  if request.user.image %} src="{{request.user.image.url}}" {% else %} src="{% static 'img/profile/user.png' %}" {% endif %}
+                       alt="User profile picture">
+                </div>
+
+                <h3 class="profile-username text-center">{{request.user.first_name|capfirst}} {{request.user.last_name|capfirst}}</h3>
+
+                <p class="text-muted text-center">{{request.user.role_instance.role_name}}</p>
+
+                <ul class="list-group list-group-unbordered mb-3">
+                  <li class="list-group-item">
+                    <b>Joining Date</b> <a class="float-right">{{request.user.joining_date|date:'Y-m-d'}}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Email</b> <a class="float-right">{{request.user.email|slice:'105'}}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Contact</b> <a class="float-right">{{request.user.phone}}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Username</b> <a class="float-right">{{request.user.username}}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Status</b> <a class="float-right">Active</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Pincode</b> <a class="float-right"> {% if request.user.pincode %}{{request.user.pincode}} {% else %} ----- {% endif %}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Apply Status</b> <a class="float-right"> {% if enrol_instance.apply_status is True %}Yes{% else %} No {% endif %}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Conditional Offer</b> <a class="float-right">  {% if enrol_instance.condition_offer is True %}Yes{% else %} No {% endif %}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Interview Done</b> <a class="float-right"> {% if enrol_instance.interview is True %}Yes{% else %} No {% endif %}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Submit Pending</b> <a class="float-right"> {% if enrol_instance.submit_pending is True %}Yes{% else %} No {% endif %}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>CAD Issued</b> <a class="float-right"> {% if enrol_instance.cad_issued is True %}Yes{% else %} No {% endif %}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Fee Paid</b> <a class="float-right"> {% if enrol_instance.fee_paid is True %}Yes{% else %} No {% endif %}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Student Document</b> <a class="float-right"> {% if enrol_instance.student_document is True %}Yes{% else %} No {% endif %}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Enrollment Completed</b> <a class="float-right"> {% if enrol_instance.enrollment_complete is True %}Yes{% else %} No {% endif %}</a>
+                  </li>
+
+
+
+                </ul>
+
+                <a href="#" class="btn btn-primary btn-block"><b>{{request.user.role_instance.role_name}}</b></a>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+          </div>
+          <!-- /.col -->
+          <div class="col-md-9">
+            <div class="card">
+              <div class="card-header p-2">
+                <ul class="nav nav-pills">
+                  <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab" id="community_tab">Basic Detail</a></li>
+                  <li class="nav-item" ><a class="nav-link" href="#settings" data-toggle="tab" id="material_tab">Mentor</a></li>
+                </ul>
+              </div><!-- /.card-header -->
+              <div class="card-body">
+                <div class="tab-content">
+                  <div class="active tab-pane" id="activity">
+                    <!-- Post -->
+                    <form class="form-horizontal"  method = "POST" id="form_edit_profile">
+                      {% csrf_token %}
+                    <div class="form-group row">
+                        <label for="inputName" class="col-sm-2 col-form-label">First Name</label>
+                        <div class="col-sm-10">
+                          <input type="text" name="first_name" class="form-control" id="first_name" placeholder="First Name" value="{{request.user.first_name}}" disabled="">
+                        </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <label for="inputName" class="col-sm-2 col-form-label">Last Name</label>
+                        <div class="col-sm-10">
+                          <input type="text" name="last_name" class="form-control" id="last_name" placeholder="Last Name" value="{{request.user.last_name}}" disabled="">
+                        </div>
+
+                      </div>
+                      <div class="form-group row">
+                        <label for="inputName" class="col-sm-2 col-form-label">Email</label>
+                        <div class="col-sm-10">
+                          <input type="email" name="email" class="form-control" id="email" placeholder="Email" value="{{request.user.email}}" disabled="">
+                        </div>
+
+                      </div>
+                      <div class="form-group row">
+                        <label for="inputName" class="col-sm-2 col-form-label">Phone</label>
+                        <div class="col-sm-10">
+                          <input type="phone" name="phone" class="form-control" id="phone" placeholder="Phone" value="{{request.user.phone}}" disabled="">
+                        </div>
+
+                      </div>
+                      <div class="form-group row">
+                        <label for="inputName" class="col-sm-2 col-form-label">Joining Date</label>
+                        <div class="col-sm-10">
+                          <input type="date" name="date" class="form-control" id="date" placeholder="Date Of Birth" value="{{request.user.joining_date|date:'Y-m-d'}}" disabled="">
+                        </div>
+
+                      </div>
+
+
+                    </form>
+                    <!-- /.post -->
+
+
+                  </div>
+
+                  <div class="tab-pane" id="settings">
+                    <form class="form-horizontal" action="/Mentorship/" method = "POST" id="mentor_profile">
+                      {% csrf_token %}
+
+                      <div class="form-group row">
+                        <label for="inputName" class="col-sm-2 col-form-label">Do You have Any Mentor ?</label>
+                        <div class="col-sm-10">
+
+                          <textarea class="form-control" type="text" name="mentor" class="form-check-input" type="text" name="mentor" disabled="disabled" >  {{mentor_instance.mentor}}</textarea>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="inputName" class="col-sm-2 col-form-label">Are You looking for any Mentor ?</label>
+                        <div class="col-sm-10">
+                          <textarea class="form-control" type="text" name="looking_mentor" class="form-check-input" type="text" disabled="">{{mentor_instance.need_mentor}}</textarea> 
+                        </div>
+                      </div>
+
+                    </form>
+                  </div>
+                  <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+              </div><!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+   <footer class="main-footer">
+      <div class="float-right d-none d-sm-block">
+         <b>Version</b> 3.1.0-rc
+      </div>
+      <strong>Copyright &copy; 2021 <a href=".">Education.io</a>.</strong> All rights reserved.
+   </footer>
+{% include 'base/sidewar.html' %}
+</div>
+
+<script type="text/javascript">
+   /// session storage
+   $(document).on('click', '#community_tab', function() {
+     var set_value = sessionStorage.setItem('value', "comm");
+   })
+   //
+   $(document).on('click', '#material_tab', function() {
+     var set_value = sessionStorage.setItem('value', "mat");
+   })
+   //
+   
+   
+   
+   
+   // end here for weight tab
+   
+   $(document).ready(function() {
+     var lastTab = sessionStorage.getItem('value');
+     if (lastTab == 'comm') {
+   
+         $('#material_tab').removeClass("active");
+         $('#community_tab').addClass("active");
+         $('#activity').addClass("show active");
+         $('#settings').removeClass("show active");
+   
+   
+     }
+   
+     if (lastTab == 'mat') {
+         $('#community_tab').removeClass("active");
+         $('#material_tab').addClass("active");
+         $('#activity').removeClass("show active");
+         $('#settings').addClass("show active");
+   
+     }
+   
+   
+   })
+   
+</script>
+
+
+
+
+<!-- ./wrapper -->
+{% endblock %}

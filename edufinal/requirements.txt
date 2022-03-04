@@ -1,0 +1,9 @@
+Django==3.2.7
+django-simpleui==2021.11.5
+python-decouple==3.4
+djangorestframework==3.12.4
+Pillow==8.3.2
+django-rest-knox==4.1.0
+Drf-yasg==1.20.0
+python_dateutil
+psycopg2
